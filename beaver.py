@@ -2,10 +2,9 @@ import sys
 import subprocess
 
 
-def find_samba_shares():
-    address = '192.168.1.12'
+def find_samba_shares(addr):
     shares = []
-    machine = subprocess.call(["sudo", "smbclient", "-L", address])
+    machine = subprocess.call(["sudo", "smbclient", "-L", addr])
     shares.append(machine)
     if shares is not True:
         print('No samba share found.')
@@ -20,14 +19,25 @@ def connect_samba(shares):
     return connect
 
 
-def mount_samba():
+def mount_samba(addr):
+    print('Mount ' + addr)
     return
 
 
 def check_viruses():
-    return
+    result = subprocess.call("clamscan -r")
+    return result
 
 
-samba_machine = find_samba_shares()
-for item in samba_machine:
-    connect_samba(item)
+def main_function():
+    address = ''
+    samba_machine = find_samba_shares(address)
+    for item in samba_machine:
+        connect_samba(item)
+        mount_samba(item)
+        viruses = check_viruses()
+        print(viruses)
+
+
+main_function()
+
