@@ -15,23 +15,32 @@ def find_samba_shares(addr):
 
 
 def connect_samba(shares):
-    connect = subprocess.call(["smbclient //", shares])
-    return connect
+    return(subprocess.call(["smbclient //", shares]))
 
 
 def mount_samba(addr):
-    print('Mount ' + addr)
-    return
+    return(print('Mount ' + addr))
 
 
 def check_viruses():
-    result = subprocess.call("clamscan -r")
-    return result
+    return(subprocess.call("clamscan -r"))
+
+
+def read_ip(some_file):
+    i = 0
+    with open(some_file, 'r') as f:
+        value = f.readline()
+        value = value.replace('\n', '')
+        i += 1
+    return value
 
 
 def main_function():
-    address = ''
-    samba_machine = find_samba_shares(address)
+    try:
+        samba_machine = find_samba_shares(read_ip('ip.txt'))
+    except FileNotFoundError as e:
+        print(e)
+        sys.exit()
     for item in samba_machine:
         connect_samba(item)
         mount_samba(item)
@@ -39,5 +48,5 @@ def main_function():
         print(viruses)
 
 
-main_function()
-
+if __name__ == '__main__':
+    main_function()
